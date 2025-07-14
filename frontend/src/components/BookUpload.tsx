@@ -5,6 +5,7 @@
 import { useState, useCallback } from 'preact/hooks'
 import { DatabaseStats } from '../types'
 import { useAPI } from '../hooks/useAPI'
+import { useLanguage } from '../contexts/LanguageContext'
 import { formatFileSize, isSupportedDocumentFile, validateFileSize, getErrorMessage } from '../utils'
 
 interface BookUploadProps {
@@ -20,6 +21,7 @@ export const BookUpload = ({ adminToken, onStatsUpdate }: BookUploadProps) => {
   const [bookDragActive, setBookDragActive] = useState<boolean>(false)
 
   const { uploadBook } = useAPI()
+  const { t } = useLanguage()
 
   const handleBookSelect = useCallback((event: Event) => {
     const target = event.target as HTMLInputElement

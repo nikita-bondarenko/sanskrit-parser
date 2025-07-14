@@ -42,7 +42,7 @@ class TextMatch:
 class SanskritDatabase:
     """Manages Sanskrit text database operations"""
     
-    def __init__(self, db_path: str = "sanskrit_texts.db"):
+    def __init__(self, db_path: str = "/app/data/sanskrit_texts.db"):
         self.db_path = db_path
         self.init_database()
     

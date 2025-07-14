@@ -4,6 +4,7 @@
 
 import { useState, useCallback } from 'preact/hooks'
 import { useAPI } from '../hooks/useAPI'
+import { useLanguage } from '../contexts/LanguageContext'
 import { DatabaseStats } from '../types'
 import { getErrorMessage } from '../utils'
 
@@ -26,6 +27,7 @@ export const AdminPanel = ({
   const [showAdminLogin, setShowAdminLogin] = useState<boolean>(false)
 
   const { adminLogin } = useAPI()
+  const { t } = useLanguage()
 
   const handleAdminLogin = useCallback(async () => {
     if (!adminPassword) return
@@ -69,14 +71,14 @@ export const AdminPanel = ({
       <div className="bg-green-500/20 border border-green-500/50 rounded-lg p-4 mb-8">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-green-200 font-semibold">✅ Admin Access Granted</h3>
-            <p className="text-green-100 text-sm">You can now upload books to the database.</p>
+            <h3 className="text-green-200 font-semibold">{t('admin.access.granted')}</h3>
+            <p className="text-green-100 text-sm">{t('admin.access.description')}</p>
           </div>
           <button
             onClick={handleAdminLogout}
             className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors"
           >
-            Logout
+            {t('admin.logout')}
           </button>
         </div>
       </div>
@@ -87,16 +89,16 @@ export const AdminPanel = ({
     <div className="bg-yellow-500/20 border border-yellow-500/50 rounded-lg p-6 mb-8">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="text-yellow-200 font-semibold mb-2">🔐 Admin Access Required</h3>
+          <h3 className="text-yellow-200 font-semibold mb-2">{t('admin.access.required')}</h3>
           <p className="text-yellow-100 text-sm">
-            Book upload is restricted to administrators only. Please log in to access database management features.
+            {t('admin.access.restriction')}
           </p>
         </div>
         <button
           onClick={() => setShowAdminLogin(!showAdminLogin)}
           className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg transition-colors"
         >
-          {showAdminLogin ? 'Cancel' : 'Admin Login'}
+          {showAdminLogin ? t('admin.cancel') : t('admin.login')}
         </button>
       </div>
       

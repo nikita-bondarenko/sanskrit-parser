@@ -17,14 +17,17 @@ app = FastAPI(title="Sanskrit OCR API", version="1.0.0")
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=[
+        "http://localhost:3000",
+        "https://sanskrit-parser.bondarenko-nikita.ru"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Include routes
-app.include_router(router)
+# Include routes with /api prefix
+app.include_router(router, prefix="/api")
 
 if __name__ == "__main__":
     import uvicorn

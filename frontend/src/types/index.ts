@@ -25,7 +25,44 @@ export interface OCRResponse {
     estimated_lines: number
     text_density: number
     quality_score: number
+    format_converted?: boolean
+    detected_format?: string
+    output_format?: string
+    processing_method?: string
   }
+}
+
+export interface TextProcessResponse {
+  success: boolean
+  text: string
+  original_text: string
+  source_info?: {
+    source_book: string
+    source_chapter: string
+    source_verse: string
+    confidence: number
+    match_type: string
+  }
+  text_info: {
+    word_count: number
+    character_count: number
+    detected_format: string
+    output_format: string
+  }
+  processing_info: {
+    database_match: boolean
+    format_converted: boolean
+    input_type: string
+  }
+}
+
+export interface ConvertTextResponse {
+  success: boolean
+  original_text: string
+  converted_text: string
+  source_format: string
+  target_format: string
+  detected_format: string
 }
 
 export interface ImageStats {
@@ -80,6 +117,19 @@ export interface SearchResult {
   word_count: number
 }
 
+// Internationalization types
+export type SupportedLanguage = 'ru' | 'en'
+
+export interface LanguageContextType {
+  currentLanguage: SupportedLanguage
+  setLanguage: (language: SupportedLanguage) => void
+  t: (key: string) => string
+}
+
+export interface Translations {
+  [key: string]: string
+}
+
 export interface SearchResponse {
   success: boolean
   results: SearchResult[]
@@ -91,7 +141,25 @@ export interface SupportedFormatsResponse {
   supported_formats: string[]
 }
 
+/**
+ * Available tab types for the application
+ */
 export type TabType = 'ocr' | 'database'
+
+/**
+ * Available input types for processing
+ */
+export type InputType = 'image' | 'text'
+
+/**
+ * Available output formats for text conversion
+ */
+export type OutputFormat = 'russian' | 'iast'
+
+/**
+ * Available input formats for image OCR - format/language of text on the image
+ */
+export type InputFormat = 'russian_diacritics' | 'english_diacritics'
 
 export interface AppState {
   activeTab: TabType

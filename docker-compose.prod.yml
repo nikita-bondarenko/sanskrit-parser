@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    container_name: sanskrit-parser-backend
+    restart: unless-stopped
+    environment:
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./backend:/app
+      - /app/__pycache__
+    networks:
+      - traefik_net
+      - sanskrit-network
+    expose:
+      - "8000"
+
+  frontend:
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+    container_name: sanskrit-parser-frontend
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - VITE_API_URL=https://sanskrit-parser.bondarenko-nikita.ru/api
+    networks:
+      - traefik_net
+      - sanskrit-network
+    depends_on:
+      - backend
+    expose:
+      - "3000"
+
+networks:
+  sanskrit-network:
+    driver: bridge
+  traefik_net:
+    external: true 

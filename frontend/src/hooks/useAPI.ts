@@ -3,18 +3,62 @@
  */
 
 import { useCallback } from 'preact/hooks'
-import { OCRResponse, BookUploadResponse, LoginResponse, DatabaseStats, SearchResponse, SupportedFormatsResponse } from '../types'
+import { OCRResponse, TextProcessResponse, ConvertTextResponse, BookUploadResponse, LoginResponse, DatabaseStats, SearchResponse, SupportedFormatsResponse, OutputFormat, InputFormat } from '../types'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
 export const useAPI = () => {
-  const processImage = useCallback(async (file: File): Promise<OCRResponse> => {
+  const processImage = useCallback(async (file: File, outputFormat: OutputFormat, inputFormat: InputFormat): Promise<OCRResponse> => {
     const formData = new FormData()
     formData.append('file', file)
+    formData.append('output_format', outputFormat)
+    formData.append('input_format', inputFormat)
+    
+    // Debug logging
+    console.log('API call with formats:', { outputFormat, inputFormat })
 
     const response = await fetch(`${API_URL}/ocr`, {
       method: 'POST',
       body: formData,
+    })
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+
+    return response.json()
+  }, [])
+
+  const processText = useCallback(async (text: string, outputFormat: OutputFormat): Promise<TextProcessResponse> => {
+    const response = await fetch(`${API_URL}/process-text`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        text,
+        output_format: outputFormat,
+      }),
+    })
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+
+    return response.json()
+  }, [])
+
+  const convertText = useCallback(async (text: string, targetFormat: OutputFormat, sourceFormat?: string): Promise<ConvertTextResponse> => {
+    const response = await fetch(`${API_URL}/convert-text`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        text,
+        target_format: targetFormat,
+        source_format: sourceFormat,
+      }),
     })
 
     if (!response.ok) {
@@ -95,6 +139,8 @@ export const useAPI = () => {
 
   return {
     processImage,
+    processText,
+    convertText,
     uploadBook,
     adminLogin,
     getDatabaseStats,
